@@ -43,8 +43,8 @@ class MainActivity : AppCompatActivity() {
             //getContentsInfo()
         }
 
+        /*ここから進むボタン、戻るボタン関連スタート*/
         val resolver = contentResolver
-
         cursor = resolver.query(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, //データの種類
             null,
@@ -54,92 +54,60 @@ class MainActivity : AppCompatActivity() {
         )
 
         susumu_button.setOnClickListener {
-            //getNextInfo()
-            // timer.text = String.format("%.1f", mTimerSec)
-            //indexからIDを取得、IDから画像のURI取得
-            cursor!!.moveToNext()
-            //val nextCusor = cursor.moveToNext()
-            val fieldIndex = cursor!!.getColumnIndex(MediaStore.Images.Media._ID)
-            val id = cursor!!.getLong(fieldIndex)
-            val imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,id)
+            if(cursor!!.isLast()==false) {
+                //indexからIDを取得、IDから画像のURI取得
+                cursor!!.moveToNext()
+                //val nextCusor = cursor.moveToNext()
+                val fieldIndex = cursor!!.getColumnIndex(MediaStore.Images.Media._ID)
+                val id = cursor!!.getLong(fieldIndex)
+                val imageUri =
+                    ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
 
-            //Log.d("ANDROID_TEST","URI:" + imageUri.toString())
-            ImageView.setImageURI(imageUri)
-            //var next = cursor.moveToNext()
-            //Log.d("ANDROID_TEST","URI:" + imageUri.toString())
-            Log.d("ANDROID_TETE","URI:" + imageUri.toString())
+                //Log.d("ANDROID_TEST","URI:" + imageUri.toString())
+                ImageView.setImageURI(imageUri)
+                //var next = cursor.moveToNext()
+                Log.d("ANDROID_TETE1","URI:" + imageUri.toString())
+            }else{
+                //次がなかったら最初に戻る
+                cursor!!.moveToFirst()
+                val fieldIndex = cursor!!.getColumnIndex(MediaStore.Images.Media._ID)
+                val id = cursor!!.getLong(fieldIndex)
+                val imageUri =
+                    ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                ImageView.setImageURI(imageUri)
+                Log.d("ANDROID_TETE2","URI:" + imageUri.toString())
+            }
         }
 
-
-
-
-
-        //start_stop.setOnClickListener(this)
         modoru_button.setOnClickListener {
-            //getContentsInfo()
-            //getNextInfo()
-            // timer.text = String.format("%.1f", mTimerSec)
-            //indexからIDを取得、IDから画像のURI取得
-            cursor!!.moveToPrevious()
-            //val nextCusor = cursor.moveToNext()
-            val fieldIndex = cursor!!.getColumnIndex(MediaStore.Images.Media._ID)
-            val id = cursor!!.getLong(fieldIndex)
-            val imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,id)
+            if(cursor!!.isFirst()==false) {
+                //indexからIDを取得、IDから画像のURI取得
+                cursor!!.moveToPrevious()
+                //val nextCusor = cursor.moveToNext()
+                val fieldIndex = cursor!!.getColumnIndex(MediaStore.Images.Media._ID)
+                val id = cursor!!.getLong(fieldIndex)
+                val imageUri =
+                    ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
 
-            //Log.d("ANDROID_TEST","URI:" + imageUri.toString())
-            ImageView.setImageURI(imageUri)
-            //var next = cursor.moveToNext()
-            //Log.d("ANDROID_TEST","URI:" + imageUri.toString())
-            Log.d("ANDROID_TETE","URI:" + imageUri.toString())
+                //Log.d("ANDROID_TEST","URI:" + imageUri.toString())
+                ImageView.setImageURI(imageUri)
+                //var next = cursor.moveToNext()
+                Log.d("ANDROID_TETE1","URI:" + imageUri.toString())
+            }else{
+                //次がなかったら最初に戻る
+                cursor!!.moveToLast()
+                val fieldIndex = cursor!!.getColumnIndex(MediaStore.Images.Media._ID)
+                val id = cursor!!.getLong(fieldIndex)
+                val imageUri =
+                    ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                ImageView.setImageURI(imageUri)
+                Log.d("ANDROID_TETE2","URI:" + imageUri.toString())
+            }
         }
 
     }
 
-/*
-    private fun getNextInfo(){ //進むボタン用
-
-            // timer.text = String.format("%.1f", mTimerSec)
-            //indexからIDを取得、IDから画像のURI取得
-            cursor.moveToNext()
-            //val nextCusor = cursor.moveToNext()
-            val fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID)
-            val id = cursor.getLong(fieldIndex)
-            val imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,id)
-
-            //Log.d("ANDROID_TEST","URI:" + imageUri.toString())
-            ImageView.setImageURI(imageUri)
-            //var next = cursor.moveToNext()
-            //Log.d("ANDROID_TEST","URI:" + imageUri.toString())
-            Log.d("ANDROID_TETE","URI:" + imageUri.toString())
-
-        }
-        cursor.close()
-        //mTimer?.cancel()
-    }
-
-
-    private fun getContentsInfo(){  //再生ボタン用
-
-
-        if(cursor!!.moveToFirst()){
-
-                            // timer.text = String.format("%.1f", mTimerSec)
-                            //indexからIDを取得、IDから画像のURI取得
-                            val fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID)
-                            val id = cursor.getLong(fieldIndex)
-                            val imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,id)
-
-                            //Log.d("ANDROID_TEST","URI:" + imageUri.toString())
-                            ImageView.setImageURI(imageUri)
-                            Log.d("ANDROID_TEST","URI:" + imageUri.toString())
-
-        }
-        cursor.close()
-        //mTimer?.cancel()
-    }
-
- */
-
+    /*ここまで進むボタン、戻るボタン関連エンド*/
 
 
 
