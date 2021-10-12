@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity() {
                                 //cursor!!.close()
                             }
                         }
-                    }, 1000, 1000) //最初に始動させるまで100ミリ秒、ループの間隔を100ミリ秒に設定
+                    }, 2000, 2000) //最初に始動させるまで100ミリ秒、ループの間隔を100ミリ秒に設定
                 } else {
                         mTimer!!.cancel()
                         button_flag = 0
