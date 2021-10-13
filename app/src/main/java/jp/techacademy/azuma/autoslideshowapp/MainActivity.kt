@@ -238,6 +238,9 @@ class MainActivity : AppCompatActivity() {
                     }
                 } else {
                     Log.d("ANDROID","許可されなかった")
+                    susumu_button.isClickable = false
+                    modoru_button.isClickable = false
+                    start_stop.isClickable = false
                 }
         }
     }
