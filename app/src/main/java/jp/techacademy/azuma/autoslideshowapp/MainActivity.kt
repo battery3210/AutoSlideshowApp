@@ -20,9 +20,10 @@ class MainActivity : AppCompatActivity() {
     private val PERMISSIONS_REQUEST_CODE = 100 //
 
     //画像の情報を取得
-    var cursor: Cursor? = null
+    //var cursor: Cursor? = null
     //再生・停止ボタン用
     var button_flag = 0
+    var mCursor: Cursor? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,35 +33,15 @@ class MainActivity : AppCompatActivity() {
         var mTimerSec = 0.0
         var mHandler = Handler() //
 
-
         //6.0以降の場合
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
                 //許可されている場合最初の画像表示
                 /*ここからカーソル関連スタート*/
-                val resolver = contentResolver
-                cursor = resolver.query(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, //データの種類
-                    null,
-                    null,
-                    null,
-                    null
-                )
-
-                if (cursor!!.moveToFirst()) {
-                    //do{
+                mCursor = getCursor()
+                if (mCursor!!.moveToFirst()) {
                     //indexからIDを取り出し、そのIDから画像のURIを取得する
-                    val fieldIndex =
-                        cursor!!.getColumnIndex(MediaStore.Images.Media._ID)
-                    val id = cursor!!.getLong(fieldIndex)
-                    val imageUri = ContentUris.withAppendedId(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        id
-                    )
-
-                    //Log.d("ANDROID", "URI:" + imageUri.toString())
-                    ImageView.setImageURI(imageUri)
-                    //} while (cursor!!.moveToNext())
+                    getContentsInfo()
                 } else {
                     //画像が一枚もなかった場合は何もしない。
                 }
@@ -88,29 +69,12 @@ class MainActivity : AppCompatActivity() {
                             mTimerSec += 1
                             mHandler.post {
                                 //timer.text = String.format("%.1f", mTimerSec)
-                                if (cursor!!.moveToNext()) {
-                                    //do{
+                                if (mCursor!!.moveToNext()) {
                                     //indexからIDを取り出し、そのIDから画像のURIを取得する
-                                    val fieldIndex =
-                                        cursor!!.getColumnIndex(MediaStore.Images.Media._ID)
-                                    val id = cursor!!.getLong(fieldIndex)
-                                    val imageUri = ContentUris.withAppendedId(
-                                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                                        id
-                                    )
-
-                                    Log.d("ANDROID", "URI:" + imageUri.toString())
-                                    ImageView.setImageURI(imageUri)
-                                    //} while (cursor!!.moveToNext())
-                                } else if(cursor!!.moveToFirst()) {
+                                    getContentsInfo()
+                                } else if(mCursor!!.moveToFirst()) {
                                     //次がなかったら最初に戻る
-
-                                    val fieldIndex = cursor!!.getColumnIndex(MediaStore.Images.Media._ID)
-                                    val id = cursor!!.getLong(fieldIndex)
-                                    val imageUri =
-                                        ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-                                    ImageView.setImageURI(imageUri)
-                                    Log.d("ANDROID_TETE2", "URI:" + imageUri.toString())
+                                    getContentsInfo()
                                 } else {
                                     //cursor!!.moveToPrevious()
                                     mTimer!!.cancel()
@@ -138,28 +102,12 @@ class MainActivity : AppCompatActivity() {
         susumu_button.setOnClickListener {
             //if(cursor!!.isLast()==false) {
             if(mTimer==null) {
-                if (cursor!!.moveToNext()) {
+                if (mCursor!!.moveToNext()) {
                     //indexからIDを取得、IDから画像のURI取得
-                    //cursor!!.moveToNext()
-                    //val nextCusor = cursor.moveToNext()
-                    val fieldIndex = cursor!!.getColumnIndex(MediaStore.Images.Media._ID)
-                    val id = cursor!!.getLong(fieldIndex)
-                    val imageUri =
-                        ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-
-                    //Log.d("ANDROID_TEST","URI:" + imageUri.toString())
-                    ImageView.setImageURI(imageUri)
-                    //var next = cursor.moveToNext()
-                    Log.d("ANDROID_TETE1", "URI:" + imageUri.toString())
-                } else if(cursor!!.moveToFirst()) {
+                    getContentsInfo()
+                } else if(mCursor!!.moveToFirst()) {
                     //次がなかったら最初に戻る
-
-                    val fieldIndex = cursor!!.getColumnIndex(MediaStore.Images.Media._ID)
-                    val id = cursor!!.getLong(fieldIndex)
-                    val imageUri =
-                        ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-                    ImageView.setImageURI(imageUri)
-                    Log.d("ANDROID_TETE2", "URI:" + imageUri.toString())
+                    getContentsInfo()
                 } else {
 
                 }
@@ -168,28 +116,12 @@ class MainActivity : AppCompatActivity() {
 
         modoru_button.setOnClickListener {
             if(mTimer==null) {
-                if (cursor!!.moveToPrevious()) {
+                if (mCursor!!.moveToPrevious()) {
                     //indexからIDを取得、IDから画像のURI取得
-                    //cursor!!.moveToPrevious()
-                    //val nextCusor = cursor.moveToNext()
-                    val fieldIndex = cursor!!.getColumnIndex(MediaStore.Images.Media._ID)
-                    val id = cursor!!.getLong(fieldIndex)
-                    val imageUri =
-                        ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-
-                    //Log.d("ANDROID_TEST","URI:" + imageUri.toString())
-                    ImageView.setImageURI(imageUri)
-                    //var next = cursor.moveToNext()
-                    Log.d("ANDROID_TETE1", "URI:" + imageUri.toString())
-                } else if(cursor!!.moveToLast()) {
+                    getContentsInfo()
+                } else if(mCursor!!.moveToLast()) {
                     //前がなかったら最後に戻る
-
-                    val fieldIndex = cursor!!.getColumnIndex(MediaStore.Images.Media._ID)
-                    val id = cursor!!.getLong(fieldIndex)
-                    val imageUri =
-                        ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-                    ImageView.setImageURI(imageUri)
-                    Log.d("ANDROID_TETE2", "URI:" + imageUri.toString())
+                    getContentsInfo()
                 } else {
 
                 }
@@ -200,7 +132,33 @@ class MainActivity : AppCompatActivity() {
 
     /*ここまで進むボタン、戻るボタン関連エンド*/
 
+    private fun getContentsInfo() {
+        // 画像の情報を取得する
 
+        val fieldIndex =
+            mCursor!!.getColumnIndex(MediaStore.Images.Media._ID)
+        val id = mCursor!!.getLong(fieldIndex)
+        val imageUri = ContentUris.withAppendedId(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            id
+        )
+
+        ImageView.setImageURI(imageUri)
+
+    }
+
+    private fun getCursor(): Cursor? {
+        val resolver = contentResolver
+        val cursor = resolver.query(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, //データの種類
+            null,
+            null,
+            null,
+            null
+        )
+
+        return cursor
+    }
 
 
     override fun onRequestPermissionsResult(requestCode: Int,permissions: Array<String> ,grantResults: IntArray){
@@ -210,29 +168,11 @@ class MainActivity : AppCompatActivity() {
                 if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     //許可されている場合最初の画像表示
                     /*ここからカーソル関連スタート*/
-                    val resolver = contentResolver
-                    cursor = resolver.query(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, //データの種類
-                        null,
-                        null,
-                        null,
-                        null
-                    )
+                    mCursor = getCursor()
 
-                    if (cursor!!.moveToFirst()) {
-                        //do{
+                    if (mCursor!!.moveToFirst()) {
                         //indexからIDを取り出し、そのIDから画像のURIを取得する
-                        val fieldIndex =
-                            cursor!!.getColumnIndex(MediaStore.Images.Media._ID)
-                        val id = cursor!!.getLong(fieldIndex)
-                        val imageUri = ContentUris.withAppendedId(
-                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                            id
-                        )
-
-                        //Log.d("ANDROID", "URI:" + imageUri.toString())
-                        ImageView.setImageURI(imageUri)
-                        //} while (cursor!!.moveToNext())
+                        getContentsInfo()
                     } else {
                         //画像が一枚もなかった場合は何もしない。
                     }
